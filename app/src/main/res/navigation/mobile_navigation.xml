@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation">
+
+    <fragment
+        android:id="@+id/navigation_dashboard"
+        android:name="com.example.weathertraineetask.WeekWeatherFragment"
+        android:label="@string/title_weekweather"
+        tools:layout="@layout/fragment_weekweather" />
+
+    <fragment
+        android:id="@+id/navigation_notifications"
+        android:name="com.example.weathertraineetask.LocationFragment"
+        android:label="@string/title_location"
+        tools:layout="@layout/fragment_location" />
+</navigation>
