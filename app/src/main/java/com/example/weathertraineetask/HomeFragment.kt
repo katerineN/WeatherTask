@@ -1,5 +1,6 @@
 package com.example.weathertraineetask
 
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,9 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.android.volley.AsyncNetwork
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import org.json.JSONObject
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,18 +36,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val min = view.findViewById(R.id.temp_min) as TextView
         val max = view.findViewById(R.id.temp_max) as TextView
 
-        val tempUrl: String = url + "?q=" + city + "," + country + "appid=" + appid
-        val stringRequest : StringRequest = StringRequest(Request.Method.POST, tempUrl,
+        val tempUrl: String = url + "?q=" + city + "," + country + "&units=metric&appid=" + appid
+        Log.d("address", tempUrl)
+        Log.d("MY_TAG","NEURA")
+        val queue = Volley.newRequestQueue(context)
+        val stringRequest = StringRequest(Request.Method.GET, tempUrl,
             { response ->
-                println("HELLO")
                 try {
-                    println("HELLO2")
-                    val jsonResponse = JSONObject(response);
+                    Log.d("MY_TAG","URA")
+                    val jsonResponse = JSONObject(response)
                     val jsonArray = jsonResponse.getJSONArray("weather")
                     val jsonObjectWeather : JSONObject = jsonArray.getJSONObject(0)
                     val description = jsonObjectWeather.getString("description")
                     val jsonObjectMain = jsonResponse.getJSONObject("main")
-                    val temp = jsonObjectMain.getDouble("temp") - 273.15
+                    val temp = jsonObjectMain.getDouble("temp")
                     val tempMin = "Min Temp: " + jsonObjectMain.getString("temp_min")+"°C"
                     val tempMax = "Max Temp: " + jsonObjectMain.getString("temp_max")+"°C"
                     val pressure = jsonObjectMain.getInt("pressure")
@@ -56,7 +62,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
                     addr.text = city + "," + country
                     val updatedAt:Long = jsonResponse.getLong("dt")
-                    upd.text =   "Updated at: "+ SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.ENGLISH).format(Date(updatedAt*1000))
+                    upd.text =   SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.ENGLISH).format(Date(updatedAt*1000))
+                    println("HELLO"+SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.ENGLISH).format(Date(updatedAt*1000)))
                     st.text = description
                     t.text = temp.toString() + "°C"
                     min.text = tempMin
@@ -64,7 +71,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 } catch (e : Exception) {
                     Log.e("WeatherTask", "Problem with JSON")
                 }
-            }) {}
+    }){
+            Log.e("WeatherTask", it.toString())
+        }
+        queue.add(stringRequest)
+        Log.d("MY_TAG","URAURA")
         return view
     }
 
